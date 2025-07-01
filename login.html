@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login with Discord</title>
+</head>
+<body style="font-family:sans-serif;text-align:center;padding-top:50px;">
+  <h2>Login to Apply</h2>
+  <p>You must log in with Discord to submit your application.</p>
+  <a id="discordLoginBtn" href="#" style="background:#5865F2;color:white;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:bold;">Login with Discord</a>
+
+  <script>
+    const clientId = 'iYkjsien5qD8k4vn-B6zyibAq5OHz-Yz';
+    const redirectUri = encodeURIComponent('https://careers.emiratesgrouproblox.link/login.html');
+    const discordUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=identify`;
+
+    document.getElementById('discordLoginBtn').href = discordUrl;
+
+    // After redirect, capture access token
+    window.onload = async () => {
+      const hash = window.location.hash;
+      if (hash.includes('access_token')) {
+        const params = new URLSearchParams(hash.substring(1));
+        const accessToken = params.get('access_token');
+
+        const res = await fetch('https://discord.com/api/users/@me', {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+
+        const user = await res.json();
+
+        // Store Discord data in localStorage
+        localStorage.setItem('discord_user', JSON.stringify({
+          id: user.id,
+          username: `${user.username}#${user.discriminator}`
+        }));
+
+        alert(`Welcome, ${user.username}! You may now apply.`);
+        window.location.href = '/index.html'; // go back to main site
+      }
+    };
+  </script>
+</body>
+</html>
 
