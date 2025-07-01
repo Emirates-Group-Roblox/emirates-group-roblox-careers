@@ -1,27 +1,135 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Emirates Group Roblox Careers</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Careers – Emirates Group Roblox</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background-color: #f4f4f4;
+      color: #222;
+    }
+
+    header {
+      background-color: #A41034;
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .btn-hr-login {
+      background-color: white;
+      color: #A41034;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-hr-login:hover {
+      background-color: #f4f4f4;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h2 {
+      color: #A41034;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    #roleSearch {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 25px;
+    }
+
+    .job-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .job-card h3 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .job-card p {
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .job-card button {
+      background-color: #A41034;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .job-card button:hover {
+      background-color: #7D0B28;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 14px;
+      padding: 20px;
+      margin-top: 40px;
+      color: #777;
+    }
+  </style>
 </head>
 <body>
-  <header>
+
+<header>
   <h1>Emirates Group Roblox Careers</h1>
-  <p>Explore open roles and apply to join the team.</p>
   <a href="hr.html" class="btn-hr-login">HR Login</a>
 </header>
 
-  </header>
+<main>
+  <h2>Join Our Team</h2>
+  <p>Discover exciting opportunities at Emirates Group Roblox. Browse open roles and submit your application today.</p>
 
-  <section id="job-list"></section>
+  <input
+    type="text"
+    id="roleSearch"
+    placeholder="Search roles by title..."
+    oninput="filterRoles()"
+  />
 
-  <footer>
-    <p>&copy; 2025 Emirates Group Roblox</p>
-  </footer>
+  <div id="job-listings">
+    <!-- Jobs will load here via JS -->
+  </div>
+</main>
 
-  <script src="main.js"></script>
+<footer>
+  &copy; 2025 Emirates Group Roblox – All rights reserved.
+</footer>
+
+<script src="application-handler.js"></script>
 </body>
 </html>
