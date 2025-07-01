@@ -101,6 +101,67 @@
       margin-top: 40px;
       color: #777;
     }
+
+    /* Application Modal Styles */
+    #applicationModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #00000080;
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #applicationModal .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+    }
+
+    #applicationModal label {
+      display: block;
+      margin-top: 12px;
+    }
+
+    #applicationModal input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #applicationModal button[type="submit"] {
+      background-color: #A41034;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      margin-top: 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #applicationModal button[type="submit"]:hover {
+      background-color: #7D0B28;
+    }
+
+    #applicationModal .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: none;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      color: #777;
+    }
+
   </style>
 </head>
 <body>
@@ -125,6 +186,39 @@
     <!-- Jobs will load here via JS -->
   </div>
 </main>
+
+<!-- Application Form Modal -->
+<div id="applicationModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeForm()">✖</button>
+    <h3 id="formTitle">Apply</h3>
+    <form id="applyForm">
+      <input type="hidden" id="applyRole" />
+      <label>First Name</label>
+      <input type="text" name="firstName" required />
+
+      <label>Last Name</label>
+      <input type="text" name="lastName" required />
+
+      <label>Age</label>
+      <input type="number" name="age" required min="10" max="100" />
+
+      <label>Country of Residency</label>
+      <input type="text" name="country" required />
+
+      <label>Discord Username</label>
+      <input type="text" name="discordUsername" required />
+
+      <label>Discord ID (18-digit)</label>
+      <input type="text" name="discordID" required pattern="\\d{18}" />
+
+      <label>Roblox Username (optional)</label>
+      <input type="text" name="robloxUsername" />
+
+      <button type="submit">Submit Application</button>
+    </form>
+  </div>
+</div>
 
 <footer>
   &copy; 2025 Emirates Group Roblox – All rights reserved.
