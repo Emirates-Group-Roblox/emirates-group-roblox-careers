@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HR Dashboard – Emirates Group Roblox</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="login-section">
+    <h2>HR Login</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <div id="dashboard-section" style="display: none;">
+    <h1>Welcome to the HR Dashboard</h1>
+    <nav>
+      <button onclick="showSection('jobs')">Manage Jobs</button>
+      <button onclick="showSection('applications')">Applications</button>
+      <button onclick="showSection('staff')">Staff Records</button>
+      <button onclick="logout()">Logout</button>
+    </nav>
+
+    <section id="jobs" class="hr-section">
+      <h2>Job Listings</h2>
+      <p>[Add / Edit / Remove job posts — coming soon]</p>
+    </section>
+
+    <section id="applications" class="hr-section" style="display: none;">
+      <h2>Applications Inbox</h2>
+      <p>[Review submitted applications — coming soon]</p>
+    </section>
+
+    <section id="staff" class="hr-section" style="display: none;">
+      <h2>Staff Management</h2>
+      <p>[View current staff, promotions, warnings — coming soon]</p>
+    </section>
+  </div>
+
+  <script src="hr-dashboard.js"></script>
+</body>
+</html>
