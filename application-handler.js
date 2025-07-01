@@ -1,4 +1,3 @@
-// Load jobs from localStorage instead of static JSON
 function loadJobs() {
   const jobs = JSON.parse(localStorage.getItem('jobs') || '[]');
   const jobContainer = document.getElementById('job-listings');
@@ -21,7 +20,6 @@ function loadJobs() {
   });
 }
 
-// Live search filter
 function filterRoles() {
   const search = document.getElementById('roleSearch').value.toLowerCase();
   const cards = document.querySelectorAll('.job-card');
@@ -31,10 +29,39 @@ function filterRoles() {
   });
 }
 
-// Example form logic (customize as needed)
 function openForm(roleTitle) {
-  alert(`Application form should open for role: ${roleTitle}`);
-  // You can expand this to show a modal form
+  document.getElementById('applicationModal').style.display = 'flex';
+  document.getElementById('applyRole').value = roleTitle;
+  document.getElementById('formTitle').textContent = `Apply for ${roleTitle}`;
 }
+
+function closeForm() {
+  document.getElementById('applicationModal').style.display = 'none';
+  document.getElementById('applyForm').reset();
+}
+
+document.getElementById('applyForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = {
+    role: document.getElementById('applyRole').value,
+    firstName: formData.get('firstName'),
+    lastName: formData.get('lastName'),
+    age: formData.get('age'),
+    country: formData.get('country'),
+    discordUsername: formData.get('discordUsername'),
+    discordID: formData.get('discordID'),
+    robloxUsername: formData.get('robloxUsername'),
+    submittedAt: new Date().toISOString(),
+    status: 'Pending'
+  };
+
+  const apps = JSON.parse(localStorage.getItem('applications') || '[]');
+  apps.push(data);
+  localStorage.setItem('applications', JSON.stringify(apps));
+
+  alert("Your application has been submitted!");
+  closeForm();
+});
 
 document.addEventListener('DOMContentLoaded', loadJobs);
