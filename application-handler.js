@@ -30,6 +30,13 @@ function filterRoles() {
 }
 
 function openForm(roleTitle) {
+  const discordUser = JSON.parse(localStorage.getItem('discord_user'));
+  if (!discordUser) {
+    alert('You must log in with Discord before applying.');
+    window.location.href = '/login.html';
+    return;
+  }
+
   document.getElementById('applicationModal').style.display = 'flex';
   document.getElementById('applyRole').value = roleTitle;
   document.getElementById('formTitle').textContent = `Apply for ${roleTitle}`;
@@ -40,17 +47,19 @@ function closeForm() {
   document.getElementById('applyForm').reset();
 }
 
-document.getElementById('applyForm').addEventListener('submit', function(e) {
+document.getElementById('applyForm').addEventListener('submit', function (e) {
   e.preventDefault();
   const formData = new FormData(e.target);
+  const discordUser = JSON.parse(localStorage.getItem('discord_user') || '{}');
+
   const data = {
     role: document.getElementById('applyRole').value,
     firstName: formData.get('firstName'),
     lastName: formData.get('lastName'),
     age: formData.get('age'),
     country: formData.get('country'),
-    discordUsername: formData.get('discordUsername'),
-    discordID: formData.get('discordID'),
+    discordUsername: discordUser.username || '',
+    discordID: discordUser.id || '',
     robloxUsername: formData.get('robloxUsername'),
     submittedAt: new Date().toISOString(),
     status: 'Pending'
