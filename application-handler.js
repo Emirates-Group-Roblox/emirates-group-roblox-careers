@@ -1,64 +1,40 @@
-// Load job listings from jobs.json
-fetch('jobs.json')
-  .then(response => response.json())
-  .then(jobs => {
-    const jobListings = document.getElementById('job-listings');
-    jobs.forEach((job, index) => {
-      const jobCard = document.createElement('div');
-      jobCard.className = 'job-card';
-      jobCard.innerHTML = `
-        <h3>${job.title}</h3>
-        <p>${job.description}</p>
-        <button onclick="openForm('${job.title}')">Apply</button>
-      `;
-      jobListings.appendChild(jobCard);
-    });
+// Load jobs from localStorage instead of static JSON
+function loadJobs() {
+  const jobs = JSON.parse(localStorage.getItem('jobs') || '[]');
+  const jobContainer = document.getElementById('job-listings');
+  jobContainer.innerHTML = '';
+
+  if (jobs.length === 0) {
+    jobContainer.innerHTML = '<p>No roles are currently open.</p>';
+    return;
+  }
+
+  jobs.forEach(job => {
+    const card = document.createElement('div');
+    card.className = 'job-card';
+    card.innerHTML = `
+      <h3>${job.title}</h3>
+      <p>${job.description}</p>
+      <button onclick="openForm('${job.title}')">Apply</button>
+    `;
+    jobContainer.appendChild(card);
   });
-
-function openForm(roleName) {
-  document.getElementById('application-form').style.display = 'block';
-  document.getElementById('selected-role-name').textContent = roleName;
-  document.getElementById('applyForm').setAttribute('data-role', roleName);
 }
 
-function closeForm() {
-  document.getElementById('application-form').style.display = 'none';
-}
-
-document.getElementById('applyForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const data = {
-    role: e.target.getAttribute('data-role'),
-    firstName: formData.get('firstName'),
-    lastName: formData.get('lastName'),
-    age: formData.get('age'),
-    country: formData.get('country'),
-    discordUsername: formData.get('discordUsername'),
-    discordID: formData.get('discordID'),
-    robloxUsername: formData.get('robloxUsername'),
-    whyJoin: formData.get('whyJoin'),
-    submittedAt: new Date().toISOString()
-  };
-
-  // For now, just log the data
-  console.log("Application Submitted:", data);
-  alert("Your application has been submitted!");
-
-  // Later: send this to backend or save to applications.json
-
-  e.target.reset();
-  closeForm();
-});
+// Live search filter
 function filterRoles() {
-  const input = document.getElementById('roleSearch').value.toLowerCase();
-  const jobCards = document.querySelectorAll('.job-card');
-  jobCards.forEach(card => {
+  const search = document.getElementById('roleSearch').value.toLowerCase();
+  const cards = document.querySelectorAll('.job-card');
+  cards.forEach(card => {
     const title = card.querySelector('h3').textContent.toLowerCase();
-    if (title.includes(input)) {
-      card.style.display = 'block';
-    } else {
-      card.style.display = 'none';
-    }
+    card.style.display = title.includes(search) ? 'block' : 'none';
   });
 }
+
+// Example form logic (customize as needed)
+function openForm(roleTitle) {
+  alert(`Application form should open for role: ${roleTitle}`);
+  // You can expand this to show a modal form
+}
+
+document.addEventListener('DOMContentLoaded', loadJobs);
