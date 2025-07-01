@@ -50,3 +50,15 @@ document.getElementById('applyForm').addEventListener('submit', function(e) {
   e.target.reset();
   closeForm();
 });
+function filterRoles() {
+  const input = document.getElementById('roleSearch').value.toLowerCase();
+  const jobCards = document.querySelectorAll('.job-card');
+  jobCards.forEach(card => {
+    const title = card.querySelector('h3').textContent.toLowerCase();
+    if (title.includes(input)) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
