@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Flight Attendant",
+    "location": "Remote",
+    "description": "Responsible for in-flight safety and customer service in roleplay flights.",
+    "id": "1"
+  },
+  {
+    "title": "HR Officer",
+    "location": "Virtual HQ",
+    "description": "Manage staff records, process applications, and maintain internal order.",
+    "id": "2"
+  }
+]
