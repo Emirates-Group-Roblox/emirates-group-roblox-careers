@@ -22,7 +22,7 @@ let hrUsers = loadData('hrUsers', [
 ]);
 let jobs = loadData('jobs', []);
 let applications = loadData('applications', []);
-let staffDb = loadData('staffDb', []);
+let orgStaffDb = loadData('orgStaffDb', []);
 
 // ======== Elements ========
 const loginSection = document.getElementById('login-section');
@@ -38,12 +38,12 @@ const jobEditIndexInput = document.getElementById('jobEditIndex');
 
 const applicationsTableBody = document.getElementById('applicationsTableBody');
 
-const staffForm = document.getElementById('staffForm');
-const staffNameInput = document.getElementById('staffName');
-const staffRoleInput = document.getElementById('staffRole');
-const staffInfoInput = document.getElementById('staffInfo');
-const staffTableBody = document.getElementById('staffTableBody');
-const staffSearchInput = document.getElementById('staffSearch');
+const orgStaffForm = document.getElementById('orgStaffForm');
+const orgStaffNameInput = document.getElementById('orgStaffName');
+const orgStaffRoleInput = document.getElementById('orgStaffRole');
+const orgStaffDetailsInput = document.getElementById('orgStaffDetails');
+const orgStaffSearchInput = document.getElementById('orgStaffSearch');
+const orgStaffTableBody = document.getElementById('orgStaffTableBody');
 
 let currentUser = null;
 
@@ -61,7 +61,7 @@ loginForm.addEventListener('submit', e => {
     showSection('jobs');
     refreshJobsTable();
     refreshApplicationsTable();
-    refreshStaffDbTable();
+    refreshOrgStaffTable();
     loginForm.reset();
   } else {
     alert('Invalid username or password.');
@@ -212,64 +212,52 @@ window.deleteApplication = function(index) {
   }
 };
 
-// ======== HR Staff Database ========
-staffForm.addEventListener('submit', e => {
+// ======== Org Staff Database ========
+orgStaffForm.addEventListener('submit', e => {
   e.preventDefault();
-  const name = staffNameInput.value.trim();
-  const role = staffRoleInput.value.trim();
-  const info = staffInfoInput.value.trim();
-  if (!name || !role || !info) {
-    alert('Please fill out all staff fields.');
+  const name = orgStaffNameInput.value.trim();
+  const role = orgStaffRoleInput.value.trim();
+  const details = orgStaffDetailsInput.value.trim();
+  if (!name || !role || !details) {
+    alert('Please fill out all fields for staff record.');
     return;
   }
-  staffDb.push({ name, role, info });
-  saveData('staffDb', staffDb);
-  staffForm.reset();
-  refreshStaffDbTable();
+  orgStaffDb.push({ name, role, details });
+  saveData('orgStaffDb', orgStaffDb);
+  orgStaffForm.reset();
+  refreshOrgStaffTable();
 });
 
-function refreshStaffDbTable() {
-  staffTableBody.innerHTML = '';
-  staffDb.forEach((staff, i) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${staff.name}</td>
-      <td>${staff.role}</td>
-      <td>${staff.info}</td>
-      <td><button class="delete-btn" onclick="deleteStaffDb(${i})">Delete</button></td>
-    `;
-    staffTableBody.appendChild(tr);
-  });
-}
-
-window.deleteStaffDb = function(index) {
-  if (confirm('Delete this staff entry?')) {
-    staffDb.splice(index, 1);
-    saveData('staffDb', staffDb);
-    refreshStaffDbTable();
-  }
-};
-
-function searchStaff() {
-  const query = staffSearchInput.value.toLowerCase();
-  const filtered = staffDb.filter(s =>
+function refreshOrgStaffTable() {
+  orgStaffTableBody.innerHTML = '';
+  const query = orgStaffSearchInput.value.toLowerCase();
+  const filtered = orgStaffDb.filter(s =>
     s.name.toLowerCase().includes(query) ||
     s.role.toLowerCase().includes(query)
   );
-  staffTableBody.innerHTML = '';
   filtered.forEach((staff, i) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${staff.name}</td>
       <td>${staff.role}</td>
-      <td>${staff.info}</td>
-      <td><button class="delete-btn" onclick="deleteStaffDb(${i})">Delete</button></td>
+      <td>${staff.details}</td>
+      <td><button class="delete-btn" onclick="deleteOrgStaff(${i})">Delete</button></td>
     `;
-    staffTableBody.appendChild(tr);
+    orgStaffTableBody.appendChild(tr);
   });
 }
 
+window.deleteOrgStaff = function(index) {
+  if (confirm('Delete this staff member from database?')) {
+    orgStaffDb.splice(index, 1);
+    saveData('orgStaffDb', orgStaffDb);
+    refreshOrgStaffTable();
+  }
+};
+
+orgStaffSearchInput.addEventListener('input', refreshOrgStaffTable);
+
 // ======== Initial Load ========
 document.addEventListener('DOMContentLoaded', () => {
-  // No auto-login
+  // Page setup on load
 });
