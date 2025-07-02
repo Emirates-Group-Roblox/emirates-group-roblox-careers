@@ -22,6 +22,7 @@ let hrUsers = loadData('hrUsers', [
 ]);
 let jobs = loadData('jobs', []);
 let applications = loadData('applications', []);
+let staffDb = loadData('staffDb', []);
 
 // ======== Elements ========
 const loginSection = document.getElementById('login-section');
@@ -35,13 +36,14 @@ const jobTitleInput = document.getElementById('jobTitle');
 const jobDescInput = document.getElementById('jobDescription');
 const jobEditIndexInput = document.getElementById('jobEditIndex');
 
-const applicationsTableBody = document.querySelector('#applicationsTable tbody');
+const applicationsTableBody = document.getElementById('applicationsTableBody');
 
-const staffTableBody = document.querySelector('#staffTable tbody');
 const staffForm = document.getElementById('staffForm');
-const staffUsernameInput = document.getElementById('staffUsername');
-const staffPasswordInput = document.getElementById('staffPassword');
-const staffEditIndexInput = document.getElementById('staffEditIndex');
+const staffNameInput = document.getElementById('staffName');
+const staffRoleInput = document.getElementById('staffRole');
+const staffInfoInput = document.getElementById('staffInfo');
+const staffTableBody = document.getElementById('staffTableBody');
+const staffSearchInput = document.getElementById('staffSearch');
 
 let currentUser = null;
 
@@ -59,7 +61,7 @@ loginForm.addEventListener('submit', e => {
     showSection('jobs');
     refreshJobsTable();
     refreshApplicationsTable();
-    refreshStaffTable();
+    refreshStaffDbTable();
     loginForm.reset();
   } else {
     alert('Invalid username or password.');
@@ -90,10 +92,8 @@ jobForm.addEventListener('submit', e => {
   }
   const editIndex = jobEditIndexInput.value;
   if (editIndex === '') {
-    // Add new job
     jobs.push({ title, description });
   } else {
-    // Update job
     jobs[editIndex] = { title, description };
   }
   saveData('jobs', jobs);
@@ -157,6 +157,8 @@ function refreshApplicationsTable() {
           <button class="action-btn accept-btn" onclick="acceptApplication(${i})">Accept</button>
           <button class="action-btn deny-btn" onclick="denyApplication(${i})">Deny</button>
         ` : ''}
+        <button class="action-btn" onclick="editApplication(${i})">Edit</button>
+        <button class="action-btn delete-btn" onclick="deleteApplication(${i})">Delete</button>
       </td>
     `;
     applicationsTableBody.appendChild(tr);
@@ -179,77 +181,95 @@ window.denyApplication = function(index) {
   }
 };
 
-// ======== HR Staff Management ========
+window.editApplication = function(index) {
+  const app = applications[index];
+  const firstName = prompt('Edit First Name:', app.firstName);
+  const lastName = prompt('Edit Last Name:', app.lastName);
+  const age = prompt('Edit Age:', app.age);
+  const country = prompt('Edit Country:', app.country);
+  const discordUsername = prompt('Edit Discord Username:', app.discordUsername);
+  const discordID = prompt('Edit Discord ID:', app.discordID);
+  const robloxUsername = prompt('Edit Roblox Username:', app.robloxUsername);
+  applications[index] = {
+    ...app,
+    firstName: firstName || app.firstName,
+    lastName: lastName || app.lastName,
+    age: age || app.age,
+    country: country || app.country,
+    discordUsername: discordUsername || app.discordUsername,
+    discordID: discordID || app.discordID,
+    robloxUsername: robloxUsername || app.robloxUsername,
+  };
+  saveData('applications', applications);
+  refreshApplicationsTable();
+};
+
+window.deleteApplication = function(index) {
+  if (confirm('Delete this application?')) {
+    applications.splice(index, 1);
+    saveData('applications', applications);
+    refreshApplicationsTable();
+  }
+};
+
+// ======== HR Staff Database ========
 staffForm.addEventListener('submit', e => {
   e.preventDefault();
-  const username = staffUsernameInput.value.trim();
-  const password = staffPasswordInput.value.trim();
-  if (!username || !password) {
-    alert('Please fill in both username and password.');
+  const name = staffNameInput.value.trim();
+  const role = staffRoleInput.value.trim();
+  const info = staffInfoInput.value.trim();
+  if (!name || !role || !info) {
+    alert('Please fill out all staff fields.');
     return;
   }
-  const editIndex = staffEditIndexInput.value;
-  // Check if username already exists (if adding new)
-  if (editIndex === '') {
-    if (hrUsers.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-      alert('Username already exists.');
-      return;
-    }
-    hrUsers.push({ username, password });
-  } else {
-    // Update existing
-    if (
-      hrUsers.some((u, i) => i !== Number(editIndex) && u.username.toLowerCase() === username.toLowerCase())
-    ) {
-      alert('Username already exists.');
-      return;
-    }
-    hrUsers[editIndex].username = username;
-    hrUsers[editIndex].password = password;
-  }
-  saveData('hrUsers', hrUsers);
-  refreshStaffTable();
+  staffDb.push({ name, role, info });
+  saveData('staffDb', staffDb);
   staffForm.reset();
-  staffEditIndexInput.value = '';
+  refreshStaffDbTable();
 });
 
-function refreshStaffTable() {
+function refreshStaffDbTable() {
   staffTableBody.innerHTML = '';
-  hrUsers.forEach((user, i) => {
+  staffDb.forEach((staff, i) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${user.username}</td>
-      <td>
-        <button class="action-btn" onclick="editStaff(${i})">Edit</button>
-        <button class="action-btn delete-btn" onclick="deleteStaff(${i})">Delete</button>
-      </td>
+      <td>${staff.name}</td>
+      <td>${staff.role}</td>
+      <td>${staff.info}</td>
+      <td><button class="delete-btn" onclick="deleteStaffDb(${i})">Delete</button></td>
     `;
     staffTableBody.appendChild(tr);
   });
 }
 
-window.editStaff = function(index) {
-  const user = hrUsers[index];
-  staffUsernameInput.value = user.username;
-  staffPasswordInput.value = user.password;
-  staffEditIndexInput.value = index;
-};
-
-window.deleteStaff = function(index) {
-  if (confirm('Delete this staff account?')) {
-    // Prevent deleting current logged in user
-    if (hrUsers[index].username === currentUser.username) {
-      alert("You can't delete your own logged-in account.");
-      return;
-    }
-    hrUsers.splice(index, 1);
-    saveData('hrUsers', hrUsers);
-    refreshStaffTable();
+window.deleteStaffDb = function(index) {
+  if (confirm('Delete this staff entry?')) {
+    staffDb.splice(index, 1);
+    saveData('staffDb', staffDb);
+    refreshStaffDbTable();
   }
 };
 
+function searchStaff() {
+  const query = staffSearchInput.value.toLowerCase();
+  const filtered = staffDb.filter(s =>
+    s.name.toLowerCase().includes(query) ||
+    s.role.toLowerCase().includes(query)
+  );
+  staffTableBody.innerHTML = '';
+  filtered.forEach((staff, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${staff.name}</td>
+      <td>${staff.role}</td>
+      <td>${staff.info}</td>
+      <td><button class="delete-btn" onclick="deleteStaffDb(${i})">Delete</button></td>
+    `;
+    staffTableBody.appendChild(tr);
+  });
+}
+
 // ======== Initial Load ========
 document.addEventListener('DOMContentLoaded', () => {
-  // If you want auto-login session persist, add here later
-  // For now show login form only
+  // No auto-login
 });
